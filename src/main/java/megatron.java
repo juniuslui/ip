@@ -26,8 +26,7 @@ public class megatron {
                 if (command.equals("list")) {
                     System.out.println("Here are the tasks in your list:");
                     for (int i = 0; i < taskCount; i++) {
-                        System.out.println((i + 1) + ".[" + tasks[i].getStatusIcon() + "] "
-                                + tasks[i].getDescription());
+                        System.out.println((i + 1) + "." + tasks[i]);
                     }
                     continue;
                 }
@@ -46,9 +45,27 @@ public class megatron {
                     continue;
                 }
 
-                tasks[taskCount] = new Task(command);
+                if (command.startsWith("todo ")) {
+                    tasks[taskCount] = new Todo(command.substring(5));
+                } else if (command.startsWith("deadline ")) {
+                    int byIndex = command.indexOf(" /by ");
+                    String description = command.substring(9, byIndex);
+                    String by = command.substring(byIndex + 5);
+                    tasks[taskCount] = new Deadline(description, by);
+                } else if (command.startsWith("event ")) {
+                    int fromIndex = command.indexOf(" /from ");
+                    int toIndex = command.indexOf(" /to ");
+                    String description = command.substring(6, fromIndex);
+                    String from = command.substring(fromIndex + 7, toIndex);
+                    String to = command.substring(toIndex + 5);
+                    tasks[taskCount] = new Event(description, from, to);
+                } else {
+                    tasks[taskCount] = new Todo(command);
+                }
                 taskCount++;
-                System.out.println("added: " + command);
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + tasks[taskCount - 1]);
+                System.out.println("Now you have " + taskCount + " tasks in the list.");
             }
         }
     }

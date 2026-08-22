@@ -2,7 +2,7 @@
  * Represents one task in Megatron's in-memory task list.
  */
 public class Task {
-    private final String description;
+    protected final String description;
     private boolean isDone;
 
     /**
@@ -45,5 +45,15 @@ public class Task {
      */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Returns the task text shown in a task list.
+     *
+     * @return this task's status and description
+     */
+    @Override
+    public String toString() {
+        return "[" + getStatusIcon() + "] " + description;
     }
 }
