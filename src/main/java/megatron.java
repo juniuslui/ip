@@ -15,6 +15,7 @@ public class megatron {
         System.out.println("What can I do for you?");
 
         String[] tasks = new String[100];
+        boolean[] isDone = new boolean[100];
         int taskCount = 0;
         try (Scanner scanner = new Scanner(System.in)) {
             while (scanner.hasNextLine()) {
@@ -24,9 +25,25 @@ public class megatron {
                     break;
                 }
                 if (command.equals("list")) {
+                    System.out.println("Here are the tasks in your list:");
                     for (int i = 0; i < taskCount; i++) {
-                        System.out.println((i + 1) + ". " + tasks[i]);
+                        String statusIcon = isDone[i] ? "X" : " ";
+                        System.out.println((i + 1) + ".[" + statusIcon + "] " + tasks[i]);
                     }
+                    continue;
+                }
+                if (command.startsWith("mark ")) {
+                    int taskIndex = Integer.parseInt(command.substring(5)) - 1;
+                    isDone[taskIndex] = true;
+                    System.out.println("Nice! I've marked this task as done:");
+                    System.out.println("  [X] " + tasks[taskIndex]);
+                    continue;
+                }
+                if (command.startsWith("unmark ")) {
+                    int taskIndex = Integer.parseInt(command.substring(7)) - 1;
+                    isDone[taskIndex] = false;
+                    System.out.println("OK, I've marked this task as not done yet:");
+                    System.out.println("  [ ] " + tasks[taskIndex]);
                     continue;
                 }
 
