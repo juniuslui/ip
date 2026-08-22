@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -14,8 +15,7 @@ public class megatron {
         System.out.println("Hello! I'm megatron.");
         System.out.println("What can I do for you?");
 
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
         try (Scanner scanner = new Scanner(System.in)) {
             while (scanner.hasNextLine()) {
                 String command = scanner.nextLine();
@@ -25,32 +25,36 @@ public class megatron {
                         break;
                     }
                     if (command.equals("list")) {
-                        printTasks(tasks, taskCount);
+                        printTasks(tasks);
                         continue;
                     }
                     if (isCommand(command, "mark")) {
-                        int taskIndex = getTaskIndex(command, "mark", taskCount);
-                        tasks[taskIndex].markAsDone();
+                        int taskIndex = getTaskIndex(command, "mark", tasks.size());
+                        tasks.get(taskIndex).markAsDone();
                         System.out.println("Nice! I've marked this task as done:");
-                        System.out.println("  [X] " + tasks[taskIndex].getDescription());
+                        System.out.println("  [X] " + tasks.get(taskIndex).getDescription());
                         continue;
                     }
                     if (isCommand(command, "unmark")) {
-                        int taskIndex = getTaskIndex(command, "unmark", taskCount);
-                        tasks[taskIndex].unmark();
+                        int taskIndex = getTaskIndex(command, "unmark", tasks.size());
+                        tasks.get(taskIndex).unmark();
                         System.out.println("OK, I've marked this task as not done yet:");
-                        System.out.println("  [ ] " + tasks[taskIndex].getDescription());
+                        System.out.println("  [ ] " + tasks.get(taskIndex).getDescription());
                         continue;
                     }
-                    if (taskCount == tasks.length) {
-                        throw new MegatronException("my task list is full.");
+                    if (isCommand(command, "delete")) {
+                        int taskIndex = getTaskIndex(command, "delete", tasks.size());
+                        Task deletedTask = tasks.remove(taskIndex);
+                        System.out.println("Noted. I've removed this task:");
+                        System.out.println("  " + deletedTask);
+                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        continue;
                     }
 
-                    tasks[taskCount] = createTask(command);
-                    taskCount++;
+                    tasks.add(createTask(command));
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks[taskCount - 1]);
-                    System.out.println("Now you have " + taskCount + " tasks in the list.");
+                    System.out.println("  " + tasks.get(tasks.size() - 1));
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                 } catch (MegatronException exception) {
                     System.out.println("Sorry, " + exception.getMessage());
                 }
@@ -112,7 +116,7 @@ public class megatron {
             }
             return new Event(description, from, to);
         }
-        throw new MegatronException("I don't recognise that command. Try todo, deadline, event, list, mark, or bye.");
+        throw new MegatronException("I don't recognise that command. Try todo, deadline, event, list, mark, delete, or bye.");
     }
 
     /**
@@ -144,12 +148,11 @@ public class megatron {
      * Prints the stored tasks in list order.
      *
      * @param tasks the stored tasks
-     * @param taskCount the number of stored tasks
      */
-    private static void printTasks(Task[] tasks, int taskCount) {
+    private static void printTasks(ArrayList<Task> tasks) {
         System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println((i + 1) + "." + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + "." + tasks.get(i));
         }
     }
 }
