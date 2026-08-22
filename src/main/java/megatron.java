@@ -1,3 +1,8 @@
+import java.util.Scanner;
+
+/**
+ * Runs the Megatron chatbot.
+ */
 public class megatron {
     public static void main(String[] args) {
         String banner = " __  __ _____ ____    _  _____ ____   ___  _   _\n"
@@ -8,6 +13,16 @@ public class megatron {
         System.out.println(banner);
         System.out.println("Hello! I'm megatron.");
         System.out.println("What can I do for you?");
-        System.out.println("Bye. Hope to see you again soon!");
+
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (scanner.hasNextLine()) {
+                String command = scanner.nextLine();
+                if (command.equals("bye")) {
+                    System.out.println("Bye. Hope to see you again soon!");
+                    break;
+                }
+                System.out.println(command);
+            }
+        }
     }
 }
