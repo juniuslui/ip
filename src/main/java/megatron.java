@@ -20,29 +20,30 @@ public class megatron {
             while (scanner.hasNextLine()) {
                 String command = scanner.nextLine();
                 try {
-                    if (command.equals("bye")) {
+                    CommandType commandType = getCommandType(command);
+                    if (commandType == CommandType.BYE) {
                         System.out.println("Bye. Hope to see you again soon!");
                         break;
                     }
-                    if (command.equals("list")) {
+                    if (commandType == CommandType.LIST) {
                         printTasks(tasks);
                         continue;
                     }
-                    if (isCommand(command, "mark")) {
+                    if (commandType == CommandType.MARK) {
                         int taskIndex = getTaskIndex(command, "mark", tasks.size());
                         tasks.get(taskIndex).markAsDone();
                         System.out.println("Nice! I've marked this task as done:");
                         System.out.println("  [X] " + tasks.get(taskIndex).getDescription());
                         continue;
                     }
-                    if (isCommand(command, "unmark")) {
+                    if (commandType == CommandType.UNMARK) {
                         int taskIndex = getTaskIndex(command, "unmark", tasks.size());
                         tasks.get(taskIndex).unmark();
                         System.out.println("OK, I've marked this task as not done yet:");
                         System.out.println("  [ ] " + tasks.get(taskIndex).getDescription());
                         continue;
                     }
-                    if (isCommand(command, "delete")) {
+                    if (commandType == CommandType.DELETE) {
                         int taskIndex = getTaskIndex(command, "delete", tasks.size());
                         Task deletedTask = tasks.remove(taskIndex);
                         System.out.println("Noted. I've removed this task:");
@@ -51,7 +52,7 @@ public class megatron {
                         continue;
                     }
 
-                    tasks.add(createTask(command));
+                    tasks.add(createTask(command, commandType));
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + tasks.get(tasks.size() - 1));
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
@@ -74,21 +75,56 @@ public class megatron {
     }
 
     /**
+     * Classifies a user command into one of Megatron's supported command types.
+     *
+     * @param command the user input
+     * @return the matching command type, or {@code UNKNOWN}
+     */
+    private static CommandType getCommandType(String command) {
+        if (isCommand(command, "todo")) {
+            return CommandType.TODO;
+        }
+        if (isCommand(command, "deadline")) {
+            return CommandType.DEADLINE;
+        }
+        if (isCommand(command, "event")) {
+            return CommandType.EVENT;
+        }
+        if (command.equals("list")) {
+            return CommandType.LIST;
+        }
+        if (isCommand(command, "mark")) {
+            return CommandType.MARK;
+        }
+        if (isCommand(command, "unmark")) {
+            return CommandType.UNMARK;
+        }
+        if (isCommand(command, "delete")) {
+            return CommandType.DELETE;
+        }
+        if (command.equals("bye")) {
+            return CommandType.BYE;
+        }
+        return CommandType.UNKNOWN;
+    }
+
+    /**
      * Creates a task from a valid task-creation command.
      *
      * @param command the user input
+     * @param commandType the previously identified command type
      * @return the corresponding task
      * @throws MegatronException if the command is unknown or incomplete
      */
-    private static Task createTask(String command) throws MegatronException {
-        if (isCommand(command, "todo")) {
+    private static Task createTask(String command, CommandType commandType) throws MegatronException {
+        if (commandType == CommandType.TODO) {
             String description = command.substring(4).trim();
             if (description.isEmpty()) {
                 throw new MegatronException("a to-do needs a description after 'todo'.");
             }
             return new Todo(description);
         }
-        if (isCommand(command, "deadline")) {
+        if (commandType == CommandType.DEADLINE) {
             String remainder = command.substring(8).trim();
             int byIndex = remainder.indexOf(" /by ");
             if (byIndex <= 0 || byIndex == remainder.length() - 5) {
@@ -101,7 +137,7 @@ public class megatron {
             }
             return new Deadline(description, by);
         }
-        if (isCommand(command, "event")) {
+        if (commandType == CommandType.EVENT) {
             String remainder = command.substring(5).trim();
             int fromIndex = remainder.indexOf(" /from ");
             int toIndex = remainder.indexOf(" /to ");
