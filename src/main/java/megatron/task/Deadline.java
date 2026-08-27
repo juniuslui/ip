@@ -22,6 +22,7 @@ public class Deadline extends Task {
     }
 
     @Override
+    /** Returns the serialized display representation of this deadline. */
     public String toString() {
         return "[D][" + getStatusIcon() + "] " + description + " (by: " + DateTimeParser.format(by) + ")";
     }
