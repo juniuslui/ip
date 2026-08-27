@@ -149,7 +149,11 @@ public class megatron {
             if (description.isEmpty() || by.isEmpty()) {
                 throw new MegatronException("a deadline needs both a description and a time.");
             }
-            return new Deadline(description, by);
+            try {
+                return new Deadline(description, by);
+            } catch (IllegalArgumentException exception) {
+                throw new MegatronException("the deadline must use yyyy-MM-dd or d/M/yyyy HHmm.");
+            }
         }
         if (commandType == CommandType.EVENT) {
             String remainder = command.substring(5).trim();
@@ -164,7 +168,11 @@ public class megatron {
             if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
                 throw new MegatronException("an event needs a description, start, and end time.");
             }
-            return new Event(description, from, to);
+            try {
+                return new Event(description, from, to);
+            } catch (IllegalArgumentException exception) {
+                throw new MegatronException("event dates must use yyyy-MM-dd or d/M/yyyy HHmm.");
+            }
         }
         throw new MegatronException("I don't recognise that command. Try todo, deadline, event, list, mark, delete, or bye.");
     }
