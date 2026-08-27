@@ -15,6 +15,8 @@ import java.util.Scanner;
 public class megatron {
     public static final String FILE_PATH = "./data/megatron.txt";
     public static void main(String[] args) {
+        Ui ui = new Ui();
+        Parser parser = new Parser();
 
         String banner = " __  __ _____ ____    _  _____ ____   ___  _   _\n"
                 + "|  \\/  | ____/ ___|  / \\|_   _|  _ \\ / _ \\| \\ | |\n"
@@ -25,18 +27,19 @@ public class megatron {
         System.out.println("Hello! I'm megatron.");
         System.out.println("What can I do for you?");
 
-        ArrayList<Task> tasks = loadTasks();
+        Storage storage = new Storage(FILE_PATH);
+        TaskList tasks = new TaskList(storage.load());
         try (Scanner scanner = new Scanner(System.in)) {
             while (scanner.hasNextLine()) {
                 String command = scanner.nextLine();
                 try {
-                    CommandType commandType = getCommandType(command);
+                    CommandType commandType = parser.getCommandType(command);
                     if (commandType == CommandType.BYE) {
                         System.out.println("Bye. Hope to see you again soon!");
                         break;
                     }
                     if (commandType == CommandType.LIST) {
-                        printTasks(tasks);
+                        ui.showTasks(tasks.asList());
                         continue;
                     }
                     if (commandType == CommandType.MARK) {
@@ -44,7 +47,7 @@ public class megatron {
                         tasks.get(taskIndex).markAsDone();
                         System.out.println("Nice! I've marked this task as done:");
                         System.out.println("  [X] " + tasks.get(taskIndex).getDescription());
-                        saveTasks(tasks);
+                        storage.save(tasks.asList());
                         continue;
                     }
                     if (commandType == CommandType.UNMARK) {
@@ -52,16 +55,16 @@ public class megatron {
                         tasks.get(taskIndex).unmark();
                         System.out.println("OK, I've marked this task as not done yet:");
                         System.out.println("  [ ] " + tasks.get(taskIndex).getDescription());
-                        saveTasks(tasks);
+                        storage.save(tasks.asList());
                         continue;
                     }
                     if (commandType == CommandType.DELETE) {
                         int taskIndex = getTaskIndex(command, "delete", tasks.size());
-                        Task deletedTask = tasks.remove(taskIndex);
+                        Task deletedTask = tasks.delete(taskIndex);
                         System.out.println("Noted. I've removed this task:");
                         System.out.println("  " + deletedTask);
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                        saveTasks(tasks);
+                        storage.save(tasks.asList());
                         continue;
                     }
 
@@ -69,9 +72,9 @@ public class megatron {
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + tasks.get(tasks.size() - 1));
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    saveTasks(tasks);
+                    storage.save(tasks.asList());
                 } catch (MegatronException exception) {
-                    System.out.println("Sorry, " + exception.getMessage());
+                    ui.showError(exception.getMessage());
                 }
             }
         }
@@ -199,18 +202,6 @@ public class megatron {
             return taskIndex;
         } catch (NumberFormatException exception) {
             throw new MegatronException("the task number after '" + action + "' must be a whole number.");
-        }
-    }
-
-    /**
-     * Prints the stored tasks in list order.
-     *
-     * @param tasks the stored tasks
-     */
-    private static void printTasks(ArrayList<Task> tasks) {
-        System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + "." + tasks.get(i));
         }
     }
 
