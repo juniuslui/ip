@@ -15,6 +15,8 @@ import java.util.Scanner;
 public class megatron {
     public static final String FILE_PATH = "./data/megatron.txt";
     public static void main(String[] args) {
+        Ui ui = new Ui();
+        Parser parser = new Parser();
 
         String banner = " __  __ _____ ____    _  _____ ____   ___  _   _\n"
                 + "|  \\/  | ____/ ___|  / \\|_   _|  _ \\ / _ \\| \\ | |\n"
@@ -25,53 +27,17 @@ public class megatron {
         System.out.println("Hello! I'm megatron.");
         System.out.println("What can I do for you?");
 
-        ArrayList<Task> tasks = loadTasks();
+        Storage storage = new Storage(FILE_PATH);
+        TaskList tasks = new TaskList(storage.load());
         try (Scanner scanner = new Scanner(System.in)) {
             while (scanner.hasNextLine()) {
                 String command = scanner.nextLine();
                 try {
-                    CommandType commandType = getCommandType(command);
-                    if (commandType == CommandType.BYE) {
-                        System.out.println("Bye. Hope to see you again soon!");
-                        break;
-                    }
-                    if (commandType == CommandType.LIST) {
-                        printTasks(tasks);
-                        continue;
-                    }
-                    if (commandType == CommandType.MARK) {
-                        int taskIndex = getTaskIndex(command, "mark", tasks.size());
-                        tasks.get(taskIndex).markAsDone();
-                        System.out.println("Nice! I've marked this task as done:");
-                        System.out.println("  [X] " + tasks.get(taskIndex).getDescription());
-                        saveTasks(tasks);
-                        continue;
-                    }
-                    if (commandType == CommandType.UNMARK) {
-                        int taskIndex = getTaskIndex(command, "unmark", tasks.size());
-                        tasks.get(taskIndex).unmark();
-                        System.out.println("OK, I've marked this task as not done yet:");
-                        System.out.println("  [ ] " + tasks.get(taskIndex).getDescription());
-                        saveTasks(tasks);
-                        continue;
-                    }
-                    if (commandType == CommandType.DELETE) {
-                        int taskIndex = getTaskIndex(command, "delete", tasks.size());
-                        Task deletedTask = tasks.remove(taskIndex);
-                        System.out.println("Noted. I've removed this task:");
-                        System.out.println("  " + deletedTask);
-                        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                        saveTasks(tasks);
-                        continue;
-                    }
-
-                    tasks.add(createTask(command, commandType));
-                    System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks.get(tasks.size() - 1));
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-                    saveTasks(tasks);
+                    Command commandObject = parser.parse(command);
+                    commandObject.execute(tasks, ui, storage);
+                    if (commandObject.isExit()) break;
                 } catch (MegatronException exception) {
-                    System.out.println("Sorry, " + exception.getMessage());
+                    ui.showError(exception.getMessage());
                 }
             }
         }
@@ -130,7 +96,7 @@ public class megatron {
      * @return the corresponding task
      * @throws MegatronException if the command is unknown or incomplete
      */
-    private static Task createTask(String command, CommandType commandType) throws MegatronException {
+    static Task createTaskForCommand(String command, CommandType commandType) throws MegatronException {
         if (commandType == CommandType.TODO) {
             String description = command.substring(4).trim();
             if (description.isEmpty()) {
@@ -186,7 +152,7 @@ public class megatron {
      * @return the zero-based task index
      * @throws MegatronException if the task number is missing, invalid, or out of range
      */
-    private static int getTaskIndex(String command, String action, int taskCount) throws MegatronException {
+    static int taskIndexForCommand(String command, String action, int taskCount) throws MegatronException {
         String numberText = command.substring(action.length()).trim();
         if (numberText.isEmpty()) {
             throw new MegatronException("provide a task number after '" + action + "'.");
@@ -199,18 +165,6 @@ public class megatron {
             return taskIndex;
         } catch (NumberFormatException exception) {
             throw new MegatronException("the task number after '" + action + "' must be a whole number.");
-        }
-    }
-
-    /**
-     * Prints the stored tasks in list order.
-     *
-     * @param tasks the stored tasks
-     */
-    private static void printTasks(ArrayList<Task> tasks) {
-        System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println((i + 1) + "." + tasks.get(i));
         }
     }
 
