@@ -1,3 +1,11 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -5,7 +13,9 @@ import java.util.Scanner;
  * Runs the Megatron chatbot.
  */
 public class megatron {
+    public static final String FILE_PATH = "./data/megatron.txt";
     public static void main(String[] args) {
+
         String banner = " __  __ _____ ____    _  _____ ____   ___  _   _\n"
                 + "|  \\/  | ____/ ___|  / \\|_   _|  _ \\ / _ \\| \\ | |\n"
                 + "| |\\/| |  _|| |  _  / _ \\ | | | |_) | | | |  \\| |\n"
@@ -15,7 +25,7 @@ public class megatron {
         System.out.println("Hello! I'm megatron.");
         System.out.println("What can I do for you?");
 
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = loadTasks();
         try (Scanner scanner = new Scanner(System.in)) {
             while (scanner.hasNextLine()) {
                 String command = scanner.nextLine();
@@ -34,6 +44,7 @@ public class megatron {
                         tasks.get(taskIndex).markAsDone();
                         System.out.println("Nice! I've marked this task as done:");
                         System.out.println("  [X] " + tasks.get(taskIndex).getDescription());
+                        saveTasks(tasks);
                         continue;
                     }
                     if (commandType == CommandType.UNMARK) {
@@ -41,6 +52,7 @@ public class megatron {
                         tasks.get(taskIndex).unmark();
                         System.out.println("OK, I've marked this task as not done yet:");
                         System.out.println("  [ ] " + tasks.get(taskIndex).getDescription());
+                        saveTasks(tasks);
                         continue;
                     }
                     if (commandType == CommandType.DELETE) {
@@ -49,6 +61,7 @@ public class megatron {
                         System.out.println("Noted. I've removed this task:");
                         System.out.println("  " + deletedTask);
                         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                        saveTasks(tasks);
                         continue;
                     }
 
@@ -56,6 +69,7 @@ public class megatron {
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + tasks.get(tasks.size() - 1));
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    saveTasks(tasks);
                 } catch (MegatronException exception) {
                     System.out.println("Sorry, " + exception.getMessage());
                 }
@@ -190,5 +204,100 @@ public class megatron {
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i + 1) + "." + tasks.get(i));
         }
+    }
+
+    /**
+     * Saves the complete task list to the data file.
+     *
+     * @param tasks the tasks to save
+     */
+    private static void saveTasks(ArrayList<Task> tasks) {
+        Path filePath = Paths.get(FILE_PATH);
+        try {
+            Files.createDirectories(filePath.getParent());
+        } catch (IOException exception) {
+            System.out.println("Sorry, I could not create the folder for your tasks.");
+            return;
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            for (Task task : tasks) {
+                writer.write(task.toString());
+                writer.newLine();
+            }
+        } catch (IOException exception) {
+            System.out.println("Sorry, I could not save your tasks.");
+        }
+    }
+
+    /**
+     * Loads saved tasks from the data file, or returns an empty list when no file exists yet.
+     *
+     * @return the saved tasks
+     */
+    private static ArrayList<Task> loadTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            return tasks;
+        }
+
+        try (Scanner fileScanner = new Scanner(file)) {
+            while (fileScanner.hasNextLine()) {
+                try {
+                    tasks.add(parseTask(fileScanner.nextLine()));
+                } catch (IllegalArgumentException exception) {
+                    System.out.println("Sorry, I could not read one of your saved tasks.");
+                }
+            }
+        } catch (FileNotFoundException exception) {
+            System.out.println("Sorry, I could not load your saved tasks.");
+        }
+        return tasks;
+    }
+
+    /**
+     * Recreates a task from its saved display format.
+     *
+     * @param line one line from the saved task file
+     * @return the recreated task
+     */
+    private static Task parseTask(String line) {
+        if (line.length() < 7 || line.charAt(0) != '[' || line.charAt(2) != ']'
+                || line.charAt(3) != '[' || line.charAt(5) != ']') {
+            throw new IllegalArgumentException("Invalid saved task format");
+        }
+        boolean isDone = line.charAt(4) == 'X';
+        String taskText = line.substring(7);
+        Task task;
+
+        if (line.startsWith("[T]")) {
+            task = new Todo(taskText);
+        } else if (line.startsWith("[D]")) {
+            int byIndex = taskText.lastIndexOf(" (by: ");
+            if (byIndex < 0 || !taskText.endsWith(")")) {
+                throw new IllegalArgumentException("Invalid saved deadline format");
+            }
+            String description = taskText.substring(0, byIndex);
+            String by = taskText.substring(byIndex + 6, taskText.length() - 1);
+            task = new Deadline(description, by);
+        } else if (line.startsWith("[E]")) {
+            int fromIndex = taskText.lastIndexOf(" (from: ");
+            int toIndex = taskText.lastIndexOf(" to: ");
+            if (fromIndex < 0 || toIndex <= fromIndex || !taskText.endsWith(")")) {
+                throw new IllegalArgumentException("Invalid saved event format");
+            }
+            String description = taskText.substring(0, fromIndex);
+            String from = taskText.substring(fromIndex + 8, toIndex);
+            String to = taskText.substring(toIndex + 5, taskText.length() - 1);
+            task = new Event(description, from, to);
+        } else {
+            throw new IllegalArgumentException("Invalid saved task type");
+        }
+
+        if (isDone) {
+            task.markAsDone();
+        }
+        return task;
     }
 }
