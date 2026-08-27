@@ -8,6 +8,7 @@ import java.util.Scanner;
 /** Loads and saves tasks in the application's data file. */
 public class Storage {
     private final String filePath;
+    /** Creates storage backed by the specified file. */
     public Storage(String filePath) { this.filePath = filePath; }
 
     /** Loads valid tasks from storage. */
@@ -53,4 +54,3 @@ public class Storage {
         return task;
     }
 }
-

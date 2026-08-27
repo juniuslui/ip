@@ -7,10 +7,15 @@ import megatron.task.*;
 import megatron.ui.Ui;
 /** An action produced by parsing one user command. */
 public abstract class Command {
+    /** Creates an exit command. */
     public static Command exit() { return new ExitCommand(); }
+    /** Creates a list command. */
     public static Command list() { return new ListCommand(); }
+    /** Creates an add command. */
     public static Command add(String input, CommandType type) { return new AddCommand(input, type); }
+    /** Creates a mark or unmark command. */
     public static Command mark(String input, boolean mark) { return new MarkCommand(input, mark); }
+    /** Creates a delete command. */
     public static Command delete(String input) { return new DeleteCommand(input); }
     /** Executes this action. */
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws MegatronException;
@@ -61,4 +66,3 @@ class DeleteCommand extends Command {
         storage.save(tasks.asList());
     }
 }
-

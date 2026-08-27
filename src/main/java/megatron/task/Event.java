@@ -25,6 +25,7 @@ public class Event extends Task {
     }
 
     @Override
+    /** Returns the serialized display representation of this event. */
     public String toString() {
         return "[E][" + getStatusIcon() + "] " + description + " (from: " + DateTimeParser.format(from)
                 + " to: " + DateTimeParser.format(to) + ")";

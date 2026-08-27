@@ -8,11 +8,13 @@ public class Todo extends Task {
      *
      * @param description the text describing the task
      */
+    /** Creates a to-do task. */
     public Todo(String description) {
         super(description);
     }
 
     @Override
+    /** Returns the serialized display representation of this task. */
     public String toString() {
         return "[T][" + getStatusIcon() + "] " + description;
     }

@@ -22,6 +22,7 @@ import java.util.Scanner;
  */
 public class megatron {
     public static final String FILE_PATH = "./data/megatron.txt";
+    /** Starts the Megatron command-line application. */
     public static void main(String[] args) {
         Ui ui = new Ui();
         Parser parser = new Parser();

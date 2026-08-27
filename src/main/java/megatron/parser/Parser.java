@@ -3,6 +3,8 @@ import megatron.command.Command;
 import megatron.exception.MegatronException;
 /** Converts user commands into command types and tasks. */
 public class Parser {
+    /** Creates a parser for chatbot commands. */
+    public Parser() { }
     /** Parses a complete user input into an executable command. */
     public Command parse(String input) throws MegatronException {
         CommandType type = getCommandType(input);
@@ -17,6 +19,7 @@ public class Parser {
         if (type == CommandType.DELETE) return Command.delete(input);
         throw new MegatronException("I don't recognise that command. Try todo, deadline, event, list, mark, delete, or bye.");
     }
+    /** Identifies the command keyword in user input. */
     public CommandType getCommandType(String command) {
         String[] words = {"todo", "deadline", "event", "mark", "unmark", "delete"};
         CommandType[] types = {CommandType.TODO, CommandType.DEADLINE, CommandType.EVENT,
@@ -27,4 +30,3 @@ public class Parser {
         return CommandType.UNKNOWN;
     }
 }
-
