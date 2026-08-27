@@ -11,4 +11,14 @@ public class TaskList {
     public Task delete(int index) { return tasks.remove(index); }
     public int size() { return tasks.size(); }
     public ArrayList<Task> asList() { return tasks; }
+    /** Returns tasks whose descriptions contain the keyword, ignoring case. */
+    public ArrayList<Task> find(String keyword) {
+        ArrayList<Task> matches = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                matches.add(task);
+            }
+        }
+        return matches;
+    }
 }

@@ -12,6 +12,7 @@ public abstract class Command {
     public static Command add(String input, CommandType type) { return new AddCommand(input, type); }
     public static Command mark(String input, boolean mark) { return new MarkCommand(input, mark); }
     public static Command delete(String input) { return new DeleteCommand(input); }
+    public static Command find(String input) { return new FindCommand(input); }
     /** Executes this action. */
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws MegatronException;
     /** Returns whether this action ends the application. */
@@ -62,3 +63,15 @@ class DeleteCommand extends Command {
     }
 }
 
+class FindCommand extends Command {
+    private final String keyword;
+    FindCommand(String input) {
+        this.keyword = input.length() > 5 ? input.substring(5).trim() : "";
+    }
+    public void execute(TaskList tasks, Ui ui, Storage storage) throws MegatronException {
+        if (keyword.isEmpty()) {
+            throw new MegatronException("provide a keyword after 'find'.");
+        }
+        ui.showMatchingTasks(tasks.find(keyword));
+    }
+}
