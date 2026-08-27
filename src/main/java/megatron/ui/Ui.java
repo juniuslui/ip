@@ -1,3 +1,6 @@
+package megatron.ui;
+
+import megatron.task.Task;
 import java.util.ArrayList;
 
 /** Handles messages displayed to the user. */

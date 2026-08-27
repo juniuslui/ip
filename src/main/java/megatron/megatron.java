@@ -1,3 +1,11 @@
+package megatron;
+import megatron.command.Command;
+import megatron.exception.MegatronException;
+import megatron.parser.CommandType;
+import megatron.parser.Parser;
+import megatron.storage.Storage;
+import megatron.task.*;
+import megatron.ui.Ui;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -96,7 +104,7 @@ public class megatron {
      * @return the corresponding task
      * @throws MegatronException if the command is unknown or incomplete
      */
-    static Task createTaskForCommand(String command, CommandType commandType) throws MegatronException {
+    public static Task createTaskForCommand(String command, CommandType commandType) throws MegatronException {
         if (commandType == CommandType.TODO) {
             String description = command.substring(4).trim();
             if (description.isEmpty()) {
@@ -152,7 +160,7 @@ public class megatron {
      * @return the zero-based task index
      * @throws MegatronException if the task number is missing, invalid, or out of range
      */
-    static int taskIndexForCommand(String command, String action, int taskCount) throws MegatronException {
+    public static int taskIndexForCommand(String command, String action, int taskCount) throws MegatronException {
         String numberText = command.substring(action.length()).trim();
         if (numberText.isEmpty()) {
             throw new MegatronException("provide a task number after '" + action + "'.");

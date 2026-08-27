@@ -1,3 +1,5 @@
+package megatron.storage;
+import megatron.task.*;
 import java.io.*;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -51,3 +53,4 @@ public class Storage {
         return task;
     }
 }
+

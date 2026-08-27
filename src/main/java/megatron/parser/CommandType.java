@@ -1,3 +1,4 @@
+package megatron.parser;
 /**
  * Identifies the commands Megatron understands.
  */
