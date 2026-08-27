@@ -37,7 +37,7 @@ test {
 }
 
 application {
-    mainClass = 'megatron.megatron'
+    mainClass = 'megatron.Megatron'
 }
 
 jar {
@@ -50,7 +50,7 @@ jar {
 shadowJar {
     archiveFileName = 'duke.jar'
     manifest {
-        attributes 'Main-Class': 'megatron.megatron'
+        attributes 'Main-Class': 'megatron.Megatron'
     }
 }
 
