@@ -20,4 +20,18 @@ public class Ui {
     public void showError(String message) {
         System.out.println("Sorry, " + message);
     }
+
+    public void showGoodbye() { System.out.println("Bye. Hope to see you again soon!"); }
+    public void showAdded(Task task, int count) {
+        System.out.println("Got it. I've added this task:\n  " + task);
+        System.out.println("Now you have " + count + " tasks in the list.");
+    }
+    public void showDeleted(Task task, int count) {
+        System.out.println("Noted. I've removed this task:\n  " + task);
+        System.out.println("Now you have " + count + " tasks in the list.");
+    }
+    public void showMarked(Task task, boolean marked) {
+        System.out.println(marked ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:");
+        System.out.println("  " + task);
+    }
 }
