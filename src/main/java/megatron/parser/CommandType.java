@@ -11,5 +11,6 @@ public enum CommandType {
     UNMARK,
     DELETE,
     BYE,
-    UNKNOWN
+    UNKNOWN,
+    FIND
 }

@@ -18,4 +18,14 @@ public class TaskList {
     public int size() { return tasks.size(); }
     /** Returns the underlying list for persistence and display. */
     public ArrayList<Task> asList() { return tasks; }
+    /** Returns tasks whose descriptions contain the keyword, ignoring case. */
+    public ArrayList<Task> find(String keyword) {
+        ArrayList<Task> matches = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                matches.add(task);
+            }
+        }
+        return matches;
+    }
 }
