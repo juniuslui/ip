@@ -1,5 +1,17 @@
+package megatron.command;
+import megatron.megatron;
+import megatron.exception.MegatronException;
+import megatron.parser.CommandType;
+import megatron.storage.Storage;
+import megatron.task.*;
+import megatron.ui.Ui;
 /** An action produced by parsing one user command. */
 public abstract class Command {
+    public static Command exit() { return new ExitCommand(); }
+    public static Command list() { return new ListCommand(); }
+    public static Command add(String input, CommandType type) { return new AddCommand(input, type); }
+    public static Command mark(String input, boolean mark) { return new MarkCommand(input, mark); }
+    public static Command delete(String input) { return new DeleteCommand(input); }
     /** Executes this action. */
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws MegatronException;
     /** Returns whether this action ends the application. */
@@ -49,3 +61,4 @@ class DeleteCommand extends Command {
         storage.save(tasks.asList());
     }
 }
+

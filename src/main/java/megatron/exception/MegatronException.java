@@ -1,3 +1,4 @@
+package megatron.exception;
 /**
  * Represents an error caused by an invalid Megatron command.
  */
