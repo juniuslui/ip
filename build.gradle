@@ -37,7 +37,7 @@ test {
 }
 
 application {
-    mainClass = 'seedu.duke.Duke'
+    mainClass = 'megatron.megatron'
 }
 
 jar {
@@ -49,6 +49,9 @@ jar {
 
 shadowJar {
     archiveFileName = 'duke.jar'
+    manifest {
+        attributes 'Main-Class': 'megatron.megatron'
+    }
 }
 
 run {
