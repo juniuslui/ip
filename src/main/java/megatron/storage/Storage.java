@@ -1,4 +1,5 @@
 package megatron.storage;
+
 import megatron.task.Deadline;
 import megatron.task.Event;
 import megatron.task.Task;
@@ -23,11 +24,16 @@ public class Storage {
     public ArrayList<Task> load() {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
-        if (!file.exists()) return tasks;
+        if (!file.exists()) {
+            return tasks;
+        }
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
-                try { tasks.add(parse(scanner.nextLine())); }
-                catch (IllegalArgumentException e) { System.out.println("Sorry, I could not read one of your saved tasks."); }
+                try {
+                    tasks.add(parse(scanner.nextLine()));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Sorry, I could not read one of your saved tasks.");
+                }
             }
         } catch (FileNotFoundException e) { System.out.println("Sorry, I could not load your saved tasks."); }
         return tasks;
