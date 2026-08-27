@@ -1,7 +1,15 @@
 package megatron.storage;
-import megatron.task.*;
-import java.io.*;
-import java.nio.file.*;
+import megatron.task.Deadline;
+import megatron.task.Event;
+import megatron.task.Task;
+import megatron.task.Todo;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 

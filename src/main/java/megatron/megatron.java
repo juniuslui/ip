@@ -4,7 +4,11 @@ import megatron.exception.MegatronException;
 import megatron.parser.CommandType;
 import megatron.parser.Parser;
 import megatron.storage.Storage;
-import megatron.task.*;
+import megatron.task.Task;
+import megatron.task.Todo;
+import megatron.task.Deadline;
+import megatron.task.Event;
+import megatron.task.TaskList;
 import megatron.ui.Ui;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,7 +24,7 @@ import java.util.Scanner;
 /**
  * Runs the Megatron chatbot.
  */
-public class megatron {
+public class Megatron {
     public static final String FILE_PATH = "./data/megatron.txt";
     /** Starts the Megatron command-line application. */
     public static void main(String[] args) {
