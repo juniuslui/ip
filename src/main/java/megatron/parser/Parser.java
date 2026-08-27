@@ -15,6 +15,7 @@ public class Parser {
             return Command.mark(input, type == CommandType.MARK);
         }
         if (type == CommandType.DELETE) return Command.delete(input);
+        if (type == CommandType.FIND) return Command.find(input);
         throw new MegatronException("I don't recognise that command. Try todo, deadline, event, list, mark, delete, or bye.");
     }
     public CommandType getCommandType(String command) {
@@ -23,8 +24,8 @@ public class Parser {
             CommandType.MARK, CommandType.UNMARK, CommandType.DELETE};
         for (int i = 0; i < words.length; i++) if (command.equals(words[i]) || command.startsWith(words[i] + " ")) return types[i];
         if (command.equals("list")) return CommandType.LIST;
+        if (command.equals("find") || command.startsWith("find ")) return CommandType.FIND;
         if (command.equals("bye")) return CommandType.BYE;
         return CommandType.UNKNOWN;
     }
 }
-
