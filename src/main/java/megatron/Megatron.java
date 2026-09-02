@@ -1,15 +1,5 @@
 package megatron;
-import megatron.command.Command;
-import megatron.exception.MegatronException;
-import megatron.parser.CommandType;
-import megatron.parser.Parser;
-import megatron.storage.Storage;
-import megatron.task.Task;
-import megatron.task.Todo;
-import megatron.task.Deadline;
-import megatron.task.Event;
-import megatron.task.TaskList;
-import megatron.ui.Ui;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,6 +10,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import megatron.command.Command;
+import megatron.exception.MegatronException;
+import megatron.parser.CommandType;
+import megatron.parser.Parser;
+import megatron.storage.Storage;
+import megatron.task.Deadline;
+import megatron.task.Event;
+import megatron.task.Task;
+import megatron.task.TaskList;
+import megatron.task.Todo;
+import megatron.ui.Ui;
 
 /**
  * Runs the Megatron chatbot.
@@ -48,7 +50,9 @@ public class Megatron {
                 try {
                     Command commandObject = parser.parse(command);
                     commandObject.execute(tasks, ui, storage);
-                    if (commandObject.isExit()) break;
+                    if (commandObject.isExit()) {
+                        break;
+                    }
                 } catch (MegatronException exception) {
                     ui.showError(exception.getMessage());
                 }
@@ -153,7 +157,8 @@ public class Megatron {
                 throw new MegatronException("event dates must use yyyy-MM-dd or d/M/yyyy HHmm.");
             }
         }
-        throw new MegatronException("I don't recognise that command. Try todo, deadline, event, list, mark, delete, or bye.");
+        throw new MegatronException(
+                "I don't recognise that command. Try todo, deadline, event, list, mark, delete, or bye.");
     }
 
     /**

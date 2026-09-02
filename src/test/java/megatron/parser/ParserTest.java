@@ -1,14 +1,15 @@
 package megatron.parser;
 
-import megatron.command.Command;
-import megatron.exception.MegatronException;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+import megatron.command.Command;
+import megatron.exception.MegatronException;
 
 /** Tests command classification and parsing, which are central to the chatbot's behavior. */
 class ParserTest {

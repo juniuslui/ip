@@ -1,4 +1,5 @@
 package megatron.command;
+
 import megatron.Megatron;
 import megatron.exception.MegatronException;
 import megatron.parser.CommandType;
@@ -32,7 +33,10 @@ class ListCommand extends Command {
 class AddCommand extends Command {
     private final String input;
     private final CommandType type;
-    AddCommand(String input, CommandType type) { this.input = input; this.type = type; }
+    AddCommand(String input, CommandType type) {
+        this.input = input;
+        this.type = type;
+    }
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MegatronException {
         Task task = Megatron.createTaskForCommand(input, type);
         tasks.add(task);
@@ -44,10 +48,17 @@ class AddCommand extends Command {
 class MarkCommand extends Command {
     private final String input;
     private final boolean mark;
-    MarkCommand(String input, boolean mark) { this.input = input; this.mark = mark; }
+    MarkCommand(String input, boolean mark) {
+        this.input = input;
+        this.mark = mark;
+    }
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MegatronException {
         int index = Megatron.taskIndexForCommand(input, mark ? "mark" : "unmark", tasks.size());
-        if (mark) tasks.get(index).markAsDone(); else tasks.get(index).unmark();
+        if (mark) {
+            tasks.get(index).markAsDone();
+        } else {
+            tasks.get(index).unmark();
+        }
         ui.showMarked(tasks.get(index), mark);
         storage.save(tasks.asList());
     }
