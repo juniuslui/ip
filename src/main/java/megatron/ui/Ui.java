@@ -1,7 +1,8 @@
 package megatron.ui;
 
-import megatron.task.Task;
 import java.util.ArrayList;
+
+import megatron.task.Task;
 
 /** Handles messages displayed to the user. */
 public class Ui {
@@ -38,7 +39,10 @@ public class Ui {
     }
     /** Displays a successful mark or unmark operation. */
     public void showMarked(Task task, boolean marked) {
-        System.out.println(marked ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:");
+        String message = marked
+                ? "Nice! I've marked this task as done:"
+                : "OK, I've marked this task as not done yet:";
+        System.out.println(message);
         System.out.println("  " + task);
     }
     /** Displays tasks matching a search keyword. */

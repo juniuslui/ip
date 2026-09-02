@@ -1,4 +1,5 @@
 package megatron.task;
+
 import java.time.LocalDateTime;
 
 /** Represents a task with a start time and an end time. */
@@ -25,7 +26,6 @@ public class Event extends Task {
     }
 
     @Override
-    /** Returns the serialized display representation of this event. */
     public String toString() {
         return "[E][" + getStatusIcon() + "] " + description + " (from: " + DateTimeParser.format(from)
                 + " to: " + DateTimeParser.format(to) + ")";
