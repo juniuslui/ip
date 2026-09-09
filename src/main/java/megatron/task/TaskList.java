@@ -1,5 +1,6 @@
 package megatron.task;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /** Owns the collection of tasks and its basic operations. */
 public class TaskList {
@@ -20,12 +21,9 @@ public class TaskList {
     public ArrayList<Task> asList() { return tasks; }
     /** Returns tasks whose descriptions contain the keyword, ignoring case. */
     public ArrayList<Task> find(String keyword) {
-        ArrayList<Task> matches = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
-                matches.add(task);
-            }
-        }
-        return matches;
+        String lowercaseKeyword = keyword.toLowerCase();
+        return tasks.stream()
+                .filter(task -> task.getDescription().toLowerCase().contains(lowercaseKeyword))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
