@@ -36,4 +36,20 @@ class UiTest {
         assertTrue(messages.get(0).contains("1.[T][ ] read book"));
         assertTrue(messages.get(0).contains("2.[T][ ] write notes"));
     }
+
+    @Test
+    void showError_message_emitsPrefixedError() {
+        ui.showError("invalid command");
+
+        assertEquals(1, messages.size());
+        assertEquals("Sorry, invalid command", messages.get(0));
+    }
+
+    @Test
+    void showGoodbye_noArguments_emitsGoodbyeMessage() {
+        ui.showGoodbye();
+
+        assertEquals(1, messages.size());
+        assertEquals("Bye. Hope to see you again soon!", messages.get(0));
+    }
 }
