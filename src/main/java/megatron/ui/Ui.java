@@ -30,11 +30,7 @@ public class Ui {
 
     /** Displays the tasks in list order. */
     public void showTasks(ArrayList<Task> tasks) {
-        StringBuilder message = new StringBuilder("Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            message.append(System.lineSeparator()).append(i + 1).append('.').append(tasks.get(i));
-        }
-        messageConsumer.accept(message.toString());
+        messageConsumer.accept(formatTasks("Here are the tasks in your list:", tasks));
     }
 
     /** Displays an error message. */
@@ -65,10 +61,15 @@ public class Ui {
     }
     /** Displays tasks matching a search keyword. */
     public void showMatchingTasks(ArrayList<Task> tasks) {
-        StringBuilder message = new StringBuilder("Here are the matching tasks in your list:");
+        messageConsumer.accept(formatTasks("Here are the matching tasks in your list:", tasks));
+    }
+
+    /** Formats a task collection with numbered entries under the supplied heading. */
+    private String formatTasks(String heading, ArrayList<Task> tasks) {
+        StringBuilder message = new StringBuilder(heading);
         for (int i = 0; i < tasks.size(); i++) {
             message.append(System.lineSeparator()).append(i + 1).append('.').append(tasks.get(i));
         }
-        messageConsumer.accept(message.toString());
+        return message.toString();
     }
 }
