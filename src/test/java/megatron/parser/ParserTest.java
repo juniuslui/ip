@@ -35,6 +35,12 @@ class ParserTest {
     }
 
     @Test
+    void getCommandType_findCommand_returnsFindType() {
+        assertEquals(CommandType.FIND, parser.getCommandType("find book"));
+        assertEquals(CommandType.FIND, parser.getCommandType("find"));
+    }
+
+    @Test
     void parse_supportedCommands_returnsCommand() throws MegatronException {
         assertNotNull(parser.parse("todo buy milk"));
         assertNotNull(parser.parse("deadline submit report /by 2026-08-27"));
@@ -59,5 +65,10 @@ class ParserTest {
     @Test
     void parse_nonExitCommand_commandIsNotExit() throws MegatronException {
         assertFalse(parser.parse("list").isExit());
+    }
+
+    @Test
+    void parse_findCommand_commandIsNotExit() throws MegatronException {
+        assertFalse(parser.parse("find book").isExit());
     }
 }
