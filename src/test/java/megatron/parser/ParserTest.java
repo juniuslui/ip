@@ -24,6 +24,7 @@ class ParserTest {
         assertEquals(CommandType.MARK, parser.getCommandType("mark 1"));
         assertEquals(CommandType.UNMARK, parser.getCommandType("unmark 1"));
         assertEquals(CommandType.DELETE, parser.getCommandType("delete 1"));
+        assertEquals(CommandType.SNOOZE, parser.getCommandType("snooze 1 2026-09-10"));
         assertEquals(CommandType.BYE, parser.getCommandType("bye"));
     }
 
@@ -49,6 +50,7 @@ class ParserTest {
         assertNotNull(parser.parse("mark 1"));
         assertNotNull(parser.parse("unmark 1"));
         assertNotNull(parser.parse("delete 1"));
+        assertNotNull(parser.parse("snooze 1 2026-09-10"));
     }
 
     @Test

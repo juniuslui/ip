@@ -1,11 +1,12 @@
 package megatron.task;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /** Represents a task with a start time and an end time. */
 public class Event extends Task {
-    private final LocalDateTime from;
-    private final LocalDateTime to;
+    private LocalDateTime from;
+    private LocalDateTime to;
 
     /**
      * Creates an event task.
@@ -23,6 +24,14 @@ public class Event extends Task {
         super(description);
         this.from = from;
         this.to = to;
+    }
+
+    /** Moves this event so that it starts at the supplied date and time. */
+    public void reschedule(String newStart) {
+        LocalDateTime updatedFrom = DateTimeParser.parse(newStart);
+        Duration duration = Duration.between(from, to);
+        from = updatedFrom;
+        to = updatedFrom.plus(duration);
     }
 
     @Override

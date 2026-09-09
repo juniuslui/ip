@@ -5,6 +5,8 @@ import megatron.exception.MegatronException;
 import megatron.parser.CommandType;
 import megatron.storage.Storage;
 import megatron.task.Task;
+import megatron.task.Deadline;
+import megatron.task.Event;
 import megatron.task.TaskList;
 import megatron.ui.Ui;
 /** An action produced by parsing one user command. */
@@ -15,6 +17,7 @@ public abstract class Command {
     public static Command mark(String input, boolean mark) { return new MarkCommand(input, mark); }
     public static Command delete(String input) { return new DeleteCommand(input); }
     public static Command find(String input) { return new FindCommand(input); }
+    public static Command snooze(String input) { return new SnoozeCommand(input); }
     /** Executes this action. */
     public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws MegatronException;
     /** Returns whether this action ends the application. */
@@ -85,5 +88,41 @@ class FindCommand extends Command {
             throw new MegatronException("provide a keyword after 'find'.");
         }
         ui.showMatchingTasks(tasks.find(keyword));
+    }
+}
+
+class SnoozeCommand extends Command {
+    private final String input;
+
+    SnoozeCommand(String input) {
+        this.input = input;
+    }
+
+    public void execute(TaskList tasks, Ui ui, Storage storage) throws MegatronException {
+        String remainder = input.substring("snooze".length()).trim();
+        int separator = remainder.indexOf(' ');
+        if (separator < 0) {
+            throw new MegatronException("use 'snooze <task number> <new date/time>'.");
+        }
+        String taskNumber = remainder.substring(0, separator);
+        String newTime = remainder.substring(separator).trim();
+        if (newTime.isEmpty()) {
+            throw new MegatronException("provide a new date/time after the task number.");
+        }
+        int index = Megatron.taskIndexForCommand("snooze " + taskNumber, "snooze", tasks.size());
+        Task task = tasks.get(index);
+        try {
+            if (task instanceof Deadline deadline) {
+                deadline.reschedule(newTime);
+            } else if (task instanceof Event event) {
+                event.reschedule(newTime);
+            } else {
+                throw new MegatronException("only deadline and event tasks can be snoozed.");
+            }
+        } catch (IllegalArgumentException exception) {
+            throw new MegatronException("the new date/time must use yyyy-MM-dd or d/M/yyyy HHmm.");
+        }
+        ui.showSnoozed(task);
+        storage.save(tasks.asList());
     }
 }

@@ -64,6 +64,11 @@ public class Ui {
         messageConsumer.accept(formatTasks("Here are the matching tasks in your list:", tasks));
     }
 
+    /** Displays a successful task rescheduling. */
+    public void showSnoozed(Task task) {
+        messageConsumer.accept("Done. I've rescheduled this task:\n  " + task);
+    }
+
     /** Formats a task collection with numbered entries under the supplied heading. */
     private String formatTasks(String heading, ArrayList<Task> tasks) {
         StringBuilder message = new StringBuilder(heading);
