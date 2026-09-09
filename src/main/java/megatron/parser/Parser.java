@@ -22,6 +22,9 @@ public class Parser {
         if (type == CommandType.DELETE) {
             return Command.delete(input);
         }
+        if (type == CommandType.SNOOZE) {
+            return Command.snooze(input);
+        }
         if (type == CommandType.FIND) {
             return Command.find(input);
         }
@@ -29,9 +32,9 @@ public class Parser {
                 "I don't recognise that command. Try todo, deadline, event, list, mark, delete, or bye.");
     }
     public CommandType getCommandType(String command) {
-        String[] words = {"todo", "deadline", "event", "mark", "unmark", "delete"};
+        String[] words = {"todo", "deadline", "event", "mark", "unmark", "delete", "snooze"};
         CommandType[] types = {CommandType.TODO, CommandType.DEADLINE, CommandType.EVENT,
-            CommandType.MARK, CommandType.UNMARK, CommandType.DELETE};
+            CommandType.MARK, CommandType.UNMARK, CommandType.DELETE, CommandType.SNOOZE};
         for (int i = 0; i < words.length; i++) {
             if (command.equals(words[i]) || command.startsWith(words[i] + " ")) {
                 return types[i];

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 /** Represents a task that must be completed by a specified time. */
 public class Deadline extends Task {
-    private final LocalDateTime by;
+    private LocalDateTime by;
 
     /**
      * Creates a deadline task.
@@ -20,6 +20,11 @@ public class Deadline extends Task {
     public Deadline(String description, LocalDateTime by) {
         super(description);
         this.by = by;
+    }
+
+    /** Changes this deadline to the supplied date and time. */
+    public void reschedule(String newTime) {
+        by = DateTimeParser.parse(newTime);
     }
 
     @Override
