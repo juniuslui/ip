@@ -6,6 +6,7 @@ import megatron.exception.MegatronException;
 public class Parser {
     /** Parses a complete user input into an executable command. */
     public Command parse(String input) throws MegatronException {
+        validateInput(input);
         CommandType type = getCommandType(input);
         if (type == CommandType.BYE) {
             return Command.exit();
@@ -30,6 +31,22 @@ public class Parser {
         }
         throw new MegatronException(
                 "I don't recognise that command. Try todo, deadline, event, list, mark, delete, or bye.");
+    }
+
+    /** Rejects input that cannot be interpreted reliably by the command grammar. */
+    private void validateInput(String input) throws MegatronException {
+        if (input == null || input.isBlank()) {
+            throw new MegatronException("a command is required.");
+        }
+        if (!input.equals(input.trim())) {
+            throw new MegatronException("remove leading and trailing spaces from the command.");
+        }
+        if (input.contains("  ")) {
+            throw new MegatronException("use only one space between command parameters.");
+        }
+        if (input.chars().anyMatch(Character::isISOControl)) {
+            throw new MegatronException("the command contains an unsupported control character.");
+        }
     }
     public CommandType getCommandType(String command) {
         String[] words = {"todo", "deadline", "event", "mark", "unmark", "delete", "snooze"};

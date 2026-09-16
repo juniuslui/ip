@@ -22,6 +22,9 @@ public class Event extends Task {
     /** Creates an event task with typed start and end dates and times. */
     public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
+        if (!from.isBefore(to)) {
+            throw new IllegalArgumentException("event start must be before event end");
+        }
         this.from = from;
         this.to = to;
     }
@@ -30,6 +33,9 @@ public class Event extends Task {
     public void reschedule(String newStart) {
         LocalDateTime updatedFrom = DateTimeParser.parse(newStart);
         Duration duration = Duration.between(from, to);
+        if (duration.isZero() || duration.isNegative()) {
+            throw new IllegalStateException("event duration is invalid");
+        }
         from = updatedFrom;
         to = updatedFrom.plus(duration);
     }

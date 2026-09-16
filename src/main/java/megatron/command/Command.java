@@ -4,9 +4,9 @@ import megatron.Megatron;
 import megatron.exception.MegatronException;
 import megatron.parser.CommandType;
 import megatron.storage.Storage;
-import megatron.task.Task;
 import megatron.task.Deadline;
 import megatron.task.Event;
+import megatron.task.Task;
 import megatron.task.TaskList;
 import megatron.ui.Ui;
 /** An action produced by parsing one user command. */
@@ -42,7 +42,11 @@ class AddCommand extends Command {
     }
     public void execute(TaskList tasks, Ui ui, Storage storage) throws MegatronException {
         Task task = Megatron.createTaskForCommand(input, type);
-        tasks.add(task);
+        try {
+            tasks.add(task);
+        } catch (IllegalArgumentException exception) {
+            throw new MegatronException("a task with the same details already exists.");
+        }
         ui.showAdded(task, tasks.size());
         storage.save(tasks.asList());
     }
