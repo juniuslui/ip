@@ -67,7 +67,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'duke.jar'
+    archiveFileName = 'megatron.jar'
     manifest {
         attributes 'Main-Class': 'megatron.Launcher'
     }

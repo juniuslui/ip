@@ -37,11 +37,11 @@ From the project root, create it with:
 The resulting file is located at:
 
 ```text
-build/libs/duke.jar
+build/libs/megatron.jar
 ```
 
 Run the application with:
 
 ```bash
-java -jar build/libs/duke.jar
+java -jar build/libs/megatron.jar
 ```
