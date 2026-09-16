@@ -32,11 +32,11 @@ public class Storage {
             while (scanner.hasNextLine()) {
                 try {
                     tasks.add(parse(scanner.nextLine()));
-                } catch (IllegalArgumentException e) {
+                } catch (RuntimeException e) {
                     System.out.println("Sorry, I could not read one of your saved tasks.");
                 }
             }
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | SecurityException e) {
             System.out.println("Sorry, I could not load your saved tasks.");
         }
         return tasks;
@@ -55,7 +55,7 @@ public class Storage {
                     writer.newLine();
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | SecurityException e) {
             System.out.println("Sorry, I could not save your tasks.");
         }
     }
@@ -72,10 +72,16 @@ public class Storage {
             task = new Todo(text);
         } else if (line.startsWith("[D]")) {
             int i = text.lastIndexOf(" (by: ");
+            if (i < 1 || !text.endsWith(")")) {
+                throw new IllegalArgumentException();
+            }
             task = new Deadline(text.substring(0, i), text.substring(i + 6, text.length() - 1));
         } else if (line.startsWith("[E]")) {
             int from = text.lastIndexOf(" (from: ");
             int to = text.lastIndexOf(" to: ");
+            if (from < 1 || to < from || !text.endsWith(")")) {
+                throw new IllegalArgumentException();
+            }
             task = new Event(text.substring(0, from), text.substring(from + 8, to),
                     text.substring(to + 5, text.length() - 1));
         } else {

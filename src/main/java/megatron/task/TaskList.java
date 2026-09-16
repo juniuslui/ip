@@ -10,7 +10,13 @@ public class TaskList {
     /** Creates an empty task list. */
     public TaskList() { this(new ArrayList<>()); }
     /** Adds a task to the list. */
-    public void add(Task task) { tasks.add(task); }
+    public void add(Task task) {
+        boolean duplicate = tasks.stream().anyMatch(existing -> existing.toString().equals(task.toString()));
+        if (duplicate) {
+            throw new IllegalArgumentException("a task with the same details already exists");
+        }
+        tasks.add(task);
+    }
     /** Returns the task at the zero-based index. */
     public Task get(int index) { return tasks.get(index); }
     /** Removes and returns the task at the zero-based index. */

@@ -5,22 +5,27 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.List;
 
 /** Parses the date and time formats accepted by Megatron. */
 public final class DateTimeParser {
     private static final List<DateTimeFormatter> INPUT_FORMATS = List.of(
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"),
-            DateTimeFormatter.ofPattern("d/M/yyyy HHmm"),
-            DateTimeFormatter.ofPattern("yyyy-MM-dd"),
-            DateTimeFormatter.ofPattern("MMM d yyyy HHmm"),
-            DateTimeFormatter.ofPattern("MMM d yyyy"));
+            strict("uuuu-MM-dd HHmm"),
+            strict("d/M/uuuu HHmm"),
+            strict("uuuu-MM-dd"),
+            strict("MMM d uuuu HHmm"),
+            strict("MMM d uuuu"));
     private static final DateTimeFormatter DISPLAY_WITH_TIME =
             DateTimeFormatter.ofPattern("MMM d yyyy HHmm");
     private static final DateTimeFormatter DISPLAY_DATE_ONLY =
             DateTimeFormatter.ofPattern("MMM d yyyy");
 
     private DateTimeParser() {
+    }
+
+    private static DateTimeFormatter strict(String pattern) {
+        return DateTimeFormatter.ofPattern(pattern).withResolverStyle(ResolverStyle.STRICT);
     }
 
     /** Converts user input into a date-time, using midnight when no time is given. */

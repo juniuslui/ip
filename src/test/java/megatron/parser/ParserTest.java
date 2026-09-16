@@ -65,6 +65,19 @@ class ParserTest {
     }
 
     @Test
+    void parse_malformedSpacing_exceptionThrown() {
+        assertThrows(MegatronException.class, () -> parser.parse(" todo buy milk"));
+        assertThrows(MegatronException.class, () -> parser.parse("todo  buy milk"));
+        assertThrows(MegatronException.class, () -> parser.parse("todo buy milk "));
+    }
+
+    @Test
+    void parse_blankInput_exceptionThrown() {
+        assertThrows(MegatronException.class, () -> parser.parse("   "));
+        assertThrows(MegatronException.class, () -> parser.parse(null));
+    }
+
+    @Test
     void parse_nonExitCommand_commandIsNotExit() throws MegatronException {
         assertFalse(parser.parse("list").isExit());
     }
