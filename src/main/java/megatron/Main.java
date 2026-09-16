@@ -8,6 +8,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import megatron.command.Command;
 import megatron.exception.MegatronException;
@@ -26,7 +27,7 @@ public class Main extends Application {
     private final TaskList tasks = new TaskList(storage.load());
     private final TextArea conversation = new TextArea();
     private final TextField userInput = new TextField();
-    private final Button sendButton = new Button("Send");
+    private final Button sendButton = new Button("⚙ Send");
     private final Ui ui = new Ui(this::showMegatronMessage);
 
     @Override
@@ -35,15 +36,22 @@ public class Main extends Application {
         configureInput();
 
         HBox inputArea = new HBox(10, userInput, sendButton);
-        HBox.setHgrow(userInput, javafx.scene.layout.Priority.ALWAYS);
+        HBox.setHgrow(userInput, Priority.ALWAYS);
 
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(15));
         root.setCenter(conversation);
         root.setBottom(inputArea);
         BorderPane.setMargin(inputArea, new Insets(10, 0, 0, 0));
+        root.setStyle("-fx-background-color: #172033;");
+        conversation.setStyle("-fx-control-inner-background: #24324a; -fx-text-fill: #f6e7c1; "
+                + "-fx-font-family: 'Serif'; -fx-font-size: 14px; -fx-border-color: #c49a52;");
+        userInput.setStyle("-fx-background-color: #f6e7c1; -fx-text-fill: #172033; "
+                + "-fx-font-family: 'Serif'; -fx-font-size: 14px;");
+        sendButton.setStyle("-fx-background-color: #c49a52; -fx-text-fill: #172033; "
+                + "-fx-font-family: 'Serif'; -fx-font-weight: bold; -fx-font-size: 14px;");
 
-        stage.setTitle("Megatron");
+        stage.setTitle("MEGATRON — Task Conquest Console");
         stage.setMinWidth(420);
         stage.setMinHeight(320);
         stage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -60,7 +68,7 @@ public class Main extends Application {
     }
 
     private void configureInput() {
-        userInput.setPromptText("Enter a command...");
+        userInput.setPromptText("Enter a command, human...");
         userInput.setOnAction(event -> handleUserInput());
         sendButton.setDefaultButton(true);
         sendButton.setOnAction(event -> handleUserInput());
@@ -87,7 +95,7 @@ public class Main extends Application {
     }
 
     private void showMegatronMessage(String message) {
-        showMessage("Megatron", message);
+        showMessage(Ui.CHATBOT_NAME, message);
     }
 
     private void showMessage(String speaker, String message) {
