@@ -39,8 +39,8 @@ public class Megatron {
                 + "| |  | | |__| |_| |/ ___ \\| | |  _ <| |_| | |\\  |\n"
                 + "|_|  |_|_____\\____/_/   \\_\\|_| |_| \\_\\___/|_| \\_|\n";
         System.out.println(banner);
-        System.out.println("Hello! I'm megatron.");
-        System.out.println("What can I do for you?");
+        System.out.println("At last. Megatron is online.");
+        System.out.println("Your schedule will be conquered. State your command.");
 
         Storage storage = new Storage(FILE_PATH);
         TaskList tasks = new TaskList(storage.load());

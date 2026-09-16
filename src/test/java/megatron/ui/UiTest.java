@@ -21,7 +21,7 @@ class UiTest {
         ui.showWelcome();
 
         assertEquals(1, messages.size());
-        assertTrue(messages.get(0).contains("Hello! I'm Megatron."));
+        assertTrue(messages.get(0).contains("Megatron is online."));
     }
 
     @Test
@@ -42,7 +42,7 @@ class UiTest {
         ui.showError("invalid command");
 
         assertEquals(1, messages.size());
-        assertEquals("Sorry, invalid command", messages.get(0));
+        assertEquals("Foolish error: invalid command Obey the command format.", messages.get(0));
     }
 
     @Test
@@ -50,6 +50,6 @@ class UiTest {
         ui.showGoodbye();
 
         assertEquals(1, messages.size());
-        assertEquals("Bye. Hope to see you again soon!", messages.get(0));
+        assertEquals("Retreat if you must. Megatron will be waiting.", messages.get(0));
     }
 }
